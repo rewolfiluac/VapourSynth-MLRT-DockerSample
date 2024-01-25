@@ -1,0 +1,10 @@
+version: "3"
+services:
+  video-toolkit:
+    build:
+      context: .
+      dockerfile: Dockerfile 
+      args:
+        JOBS: ${JOBS}
+    tty: true
+
