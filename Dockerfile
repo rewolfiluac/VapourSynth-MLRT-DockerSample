@@ -32,7 +32,6 @@ RUN bash autogen.sh \
 
 # install vapoursynth
 # WORKDIR /tmp
-# RUN rm -rf /tmp/zimg
 
 # RUN git clone https://github.com/vapoursynth/vapoursynth.git
 
