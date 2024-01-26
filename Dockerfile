@@ -11,12 +11,6 @@ RUN apt update && apt upgrade -y \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
 # install cython
-# WORKDIR /tmp
-# RUN git clone https://github.com/cython/cython
-# WORKDIR /tmp/cython
-# RUN python3 setup.py build \
-#     && python3 setup.py install \
-#     && make
 RUN pip3 install cython
 
 # install zimg
@@ -31,13 +25,19 @@ RUN bash autogen.sh \
     && ldconfig 
 
 # install vapoursynth
-# WORKDIR /tmp
+WORKDIR /tmp
 
-# RUN git clone https://github.com/vapoursynth/vapoursynth.git
+RUN git clone https://github.com/vapoursynth/vapoursynth.git
 
-# WORKDIR /tmp/vapoursynth
+WORKDIR /tmp/vapoursynth
 
-# RUN bash autogen.sh \
-#     && ./configure \
-#     && make -j${JOBS} \
-#     && make install
+# include分が足りないので追加
+RUN sed -i '1s/^/#include <atomic>\n/' src/core/audiofilters.cpp
+
+RUN bash autogen.sh \
+    && ./configure \
+    && make -j${JOBS} \
+    && make install \
+    && ldconfig 
+
+ENV PYTHONPATH /usr/local/lib/python3.10/site-packages:$PYTHONPATH
