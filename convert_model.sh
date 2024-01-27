@@ -15,10 +15,11 @@ function convert_onnx2trt () {
     trtexec --onnx=$1 --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=$OUT_PATH --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT --fp16 --workspace=4096
 }
 
-TARGET_DIR=${MODEL_DIR}/cugan
+function convert_onnx2trt_all () {
+    for filepath in $1/*; do
+        echo $filepath
+        convert_onnx2trt $filepath
+    done
+}
 
-for filepath in $TARGET_DIR/*; do
-  echo $filepath
-  convert_onnx2trt $filepath
-  break
-done
+convert_onnx2trt_all ${MODEL_DIR}/cugan
