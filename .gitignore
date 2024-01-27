@@ -167,6 +167,7 @@ cython_debug/
 .gitconfig
 .python_history
 .hunter
+.wget-hsts
 
 # in/out files
 input/*
