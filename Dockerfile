@@ -35,7 +35,7 @@ RUN git clone https://github.com/vapoursynth/vapoursynth.git
 
 WORKDIR /tmp/vapoursynth
 
-# include分が足りないので追加
+### include文が足りないので追加
 RUN sed -i '1s/^/#include <atomic>\n/' src/core/audiofilters.cpp
 
 RUN bash autogen.sh \
@@ -148,5 +148,20 @@ RUN git clone https://github.com/sekrit-twc/libp2p.git
 RUN meson build \
     && ninja -C build \
     && ninja -C build install
+
+# install plugin 
+WORKDIR /tmp
+RUN git clone https://github.com/AmusementClub/vs-mlrt.git
+WORKDIR /tmp/vs-mlrt/vstrt
+### 参照先の書き換え
+RUN sed -i "/set(VAPOURSYNTH_INCLUDE_DIRECTORY*/c set(VAPOURSYNTH_INCLUDE_DIRECTORY \/usr\/local\/include\/vapoursynth)" CMakeLists.txt
+RUN sed -i "/set(TENSORRT_HOME*/c set(TENSORRT_HOME \/usr\/src\/tensorrt)" CMakeLists.txt
+RUN sed -i "/set(CUDNN_HOME*/c set(CUDNN_HOME \/usr\/local\/cuda)" CMakeLists.txt
+RUN mkdir build
+WORKDIR /tmp/vs-mlrt/vstrt/build
+RUN cmake .. \
+    && make -j${JOBS} \
+    && make install \
+    && mv /usr/local/lib/libvstrt.so /usr/local/lib/vapoursynth/libvstrt.so
 
 WORKDIR /root/
