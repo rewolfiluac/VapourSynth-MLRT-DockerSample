@@ -7,8 +7,7 @@ RUN apt update && apt upgrade -y \
     libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev \
     meson ninja-build pkg-config git texinfo yasm zlib1g-dev libunistring-dev \
     python3.10 python3.10-dev python3-pip \
-    # encoder (command example: x264 x265 SvtAv1EncApp)
-    libnuma-dev \
+    libnuma-dev p7zip-full \
     # clean up image
     && apt clean \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
@@ -149,7 +148,7 @@ RUN meson build \
     && ninja -C build \
     && ninja -C build install
 
-# install plugin 
+# install plugin vs-mlrt
 WORKDIR /tmp
 RUN git clone https://github.com/AmusementClub/vs-mlrt.git
 WORKDIR /tmp/vs-mlrt/vstrt
@@ -163,5 +162,35 @@ RUN cmake .. \
     && make -j${JOBS} \
     && make install \
     && mv /usr/local/lib/libvstrt.so /usr/local/lib/vapoursynth/libvstrt.so
+
+# vs-mlrt convert model
+WORKDIR /tmp
+RUN wget https://github.com/AmusementClub/vs-mlrt/releases/download/v13.2/models.v13.2.7z \
+    && 7z x models.v13.2.7z
+WORKDIR /tmp/models
+RUN mkdir /trtengine
+### convert CUGAN Model
+##### pro-conservative-up2x.onnx
+RUN trtexec --onnx=cugan/pro-conservative-up2x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/pro-conservative-up2x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+##### pro-denoise3x-up2x.onnx
+RUN trtexec --onnx=cugan/pro-denoise3x-up2x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/pro-denoise3x-up2x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+##### pro-no-denoise3x-up2x.onnx
+RUN trtexec --onnx=cugan/pro-no-denoise3x-up2x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/pro-no-denoise3x-up2x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+##### up2x-latest-conservative.onnx
+RUN trtexec --onnx=cugan/up2x-latest-conservative.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-conservative.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+##### up2x-latest-denoise1x.onnx
+RUN trtexec --onnx=cugan/up2x-latest-denoise1x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-denoise1x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+##### up2x-latest-denoise2x.onnx
+RUN trtexec --onnx=cugan/up2x-latest-denoise2x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-denoise2x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+##### up2x-latest-denoise3x.onnx
+RUN trtexec --onnx=cugan/up2x-latest-denoise3x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-denoise3x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+##### up2x-latest-no-denoise.onnx
+RUN trtexec --onnx=cugan/up2x-latest-no-denoise.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-no-denoise.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+
+# vs-mlrt prepare script
+WORKDIR /tmp
+RUN wget https://github.com/AmusementClub/vs-mlrt/releases/download/v13.2/scripts.v13.2.7z \
+    && 7z x scripts.v13.2.7z \
+    && cp vsmlrt.py /root/src
 
 WORKDIR /root/

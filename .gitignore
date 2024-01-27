@@ -174,3 +174,6 @@ bsindex.json
 # in/out files
 input/*
 output/*
+
+# vsmlrt
+vsmlrt.py
