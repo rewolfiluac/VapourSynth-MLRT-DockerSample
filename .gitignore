@@ -166,6 +166,7 @@ cython_debug/
 .bash_profile
 .gitconfig
 .python_history
+.hunter
 
 # in/out files
 input/*
