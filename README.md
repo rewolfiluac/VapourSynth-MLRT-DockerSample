@@ -5,6 +5,9 @@ This repository is a Docker and code sample for super-resolution using VapourSyn
 In this environment, TensorRT is used, but please build other libraries (vsov for OpenVINO, vsncnn for NCNN) as needed.<br>
 この環境ではTensorRTを利用してますが、必要に応じて他のライブラリ(vsov:OpenVINO用やvsncnn:NCNN用)もビルドしてください。<br>
 
+# Environment tested
+- Ubuntu22.04
+- RTX4090
 
 # Setup
 ```bash
