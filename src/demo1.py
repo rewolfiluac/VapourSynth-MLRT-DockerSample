@@ -28,7 +28,7 @@ if __name__ == "__main__":
                 '--crf',    '23',
                 '--output', str(output_path),
                 '-']  
-
+        clip.set_output() 
         # process = subprocess.Popen(x265_cmd, stdin=subprocess.PIPE)
         # clip.output(process.stdin, y4m = True)
         # process.communicate()

@@ -9,7 +9,6 @@ RUN apt update && apt upgrade -y \
     python3.10 python3.10-dev python3-pip \
     # encoder (command example: x264 x265 SvtAv1EncApp)
     libnuma-dev \
-    # x264 x265 svt-av1 \
     # clean up image
     && apt clean \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
@@ -82,8 +81,8 @@ RUN ./configure --enable-static --enable-pic \
 ## install libx265
 WORKDIR $FFMPEG_SRC_ROOT
 RUN wget -O x265.tar.bz2 https://bitbucket.org/multicoreware/x265_git/get/master.tar.bz2 \
-    && tar xjvf x265.tar.bz2
-WORKDIR $FFMPEG_SRC_ROOT/multicoreware-x265_git-*/build/linux
+    && mkdir x265 && tar xjvf x265.tar.bz2 -C x265 --strip-components 1
+WORKDIR $FFMPEG_SRC_ROOT/x265/build/linux
 RUN cmake -G "Unix Makefiles" -DENABLE_SHARED:bool=off ../../source \
     && make -j${JOBS} \
     && make install
@@ -104,7 +103,7 @@ RUN wget https://github.com/Netflix/vmaf/archive/v2.3.1.tar.gz \
     && mkdir -p vmaf-2.3.1/libvmaf/build
 WORKDIR $FFMPEG_SRC_ROOT/vmaf-2.3.1/libvmaf/build
 RUN meson setup -Denable_tests=false -Denable_docs=false --buildtype=release --default-library=static .. \
-    && ninja -j${JOBS} \
+    && ninja \
     && ninja install
 
 ## install libfdk-aac
