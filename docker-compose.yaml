@@ -7,4 +7,10 @@ services:
       args:
         JOBS: ${JOBS}
     tty: true
-
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    volumes:
+      - .:/root

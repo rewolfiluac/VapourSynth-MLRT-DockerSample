@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM nvcr.io/nvidia/tensorrt:23.12-py3
 
 RUN apt update && apt upgrade -y \
     && apt install -y \
@@ -41,3 +41,5 @@ RUN bash autogen.sh \
     && ldconfig 
 
 ENV PYTHONPATH /usr/local/lib/python3.10/site-packages:$PYTHONPATH
+
+WORKDIR /root/
