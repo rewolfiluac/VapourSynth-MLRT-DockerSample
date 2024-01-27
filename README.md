@@ -21,3 +21,7 @@ bash convert_model.sh /tmp/models/cugan/pro-conservative-up2x.onnx
 cd src
 python demo_trt.py
 ```
+
+# Reference
+- https://github.com/vapoursynth/vapoursynth
+- https://github.com/AmusementClub/vs-mlrt
