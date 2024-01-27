@@ -168,6 +168,8 @@ cython_debug/
 .python_history
 .hunter
 .wget-hsts
+.gnupg
+bsindex.json
 
 # in/out files
 input/*

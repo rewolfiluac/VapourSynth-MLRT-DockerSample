@@ -17,9 +17,9 @@ if __name__ == "__main__":
     core = vs.core
     for file_path in file_path_list:
         clip = core.bs.VideoSource(source=str(file_path))
-        output_path = input_dir_path / f"{file_path.stem}{OUT_EXT}"
-        print(output_path)
-        x265_cmd = ["x265", '--frames', f'{len(clip)}',
+        output_path = output_dir_path / f"{file_path.stem}{OUT_EXT}"
+        x265_cmd = ["x265", 
+                '--frames', f'{len(clip)}',
                 '--y4m',
                 '--input-depth', f'{clip.format.bits_per_sample}',
                 '--output-depth', '10',
@@ -28,7 +28,7 @@ if __name__ == "__main__":
                 '--crf',    '23',
                 '--output', str(output_path),
                 '-']  
-        clip.set_output() 
-        # process = subprocess.Popen(x265_cmd, stdin=subprocess.PIPE)
-        # clip.output(process.stdin, y4m = True)
-        # process.communicate()
+        # clip.set_output(index=0) 
+        process = subprocess.Popen(x265_cmd, stdin=subprocess.PIPE)
+        clip.output(process.stdin, y4m = True)
+        process.communicate()

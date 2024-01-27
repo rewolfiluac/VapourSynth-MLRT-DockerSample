@@ -14,3 +14,7 @@ services:
             - capabilities: [gpu]
     volumes:
       - .:/root
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
