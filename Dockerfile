@@ -163,29 +163,10 @@ RUN cmake .. \
     && make install \
     && mv /usr/local/lib/libvstrt.so /usr/local/lib/vapoursynth/libvstrt.so
 
-# vs-mlrt convert model
+# vs-mlrt prepare model
 WORKDIR /tmp
 RUN wget https://github.com/AmusementClub/vs-mlrt/releases/download/v13.2/models.v13.2.7z \
     && 7z x models.v13.2.7z
-WORKDIR /tmp/models
-RUN mkdir /trtengine
-### convert CUGAN Model
-##### pro-conservative-up2x.onnx
-RUN trtexec --onnx=cugan/pro-conservative-up2x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/pro-conservative-up2x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
-##### pro-denoise3x-up2x.onnx
-RUN trtexec --onnx=cugan/pro-denoise3x-up2x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/pro-denoise3x-up2x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
-##### pro-no-denoise3x-up2x.onnx
-RUN trtexec --onnx=cugan/pro-no-denoise3x-up2x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/pro-no-denoise3x-up2x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
-##### up2x-latest-conservative.onnx
-RUN trtexec --onnx=cugan/up2x-latest-conservative.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-conservative.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
-##### up2x-latest-denoise1x.onnx
-RUN trtexec --onnx=cugan/up2x-latest-denoise1x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-denoise1x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
-##### up2x-latest-denoise2x.onnx
-RUN trtexec --onnx=cugan/up2x-latest-denoise2x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-denoise2x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
-##### up2x-latest-denoise3x.onnx
-RUN trtexec --onnx=cugan/up2x-latest-denoise3x.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-denoise3x.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
-##### up2x-latest-no-denoise.onnx
-RUN trtexec --onnx=cugan/up2x-latest-no-denoise.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x64x64 --maxShapes=input:1x3x1080x1920 --saveEngine=/trtengine/up2x-latest-no-denoise.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
 
 # vs-mlrt prepare script
 WORKDIR /tmp

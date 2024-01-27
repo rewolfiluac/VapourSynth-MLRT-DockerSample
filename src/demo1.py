@@ -22,7 +22,7 @@ if __name__ == "__main__":
         video = vs.core.bs.VideoSource(source=str(file_path))
         video = vs.core.std.SelectEvery(video, cycle=2, offsets=[0])  # fpsを半分にする
         video = video.resize.Point(format=vs.RGBS)  # モデルが読み込めるようにRGBSに変換
-        video = vs.core.trt.Model(video, engine_path=ENGINE_PATH, tilesize=[video.width, video.height])  # CUGANでアップスケール
+        video = vs.core.trt.Model(video, engine_path=ENGINE_PATH, tilesize=[video.width, video.height], use_cuda_graph=True, num_streams=2)  # CUGANでアップスケール
         video = video.resize.Point(format=vs.YUV420P8, matrix_s="709")  # ffmpegへストリーム出来るようにYUV420P8に変換
 
         output_path = output_dir_path / f"{file_path.stem}{OUT_EXT}"
