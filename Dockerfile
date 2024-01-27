@@ -6,6 +6,8 @@ RUN apt update && apt upgrade -y \
     autoconf automake libtool \
     pkg-config git \
     python3.10 python3.10-dev python3-pip \
+    # encoder (command example: x264 x265 SvtAv1EncApp)
+    x264 x265 svt-av1 \
     # clean up image
     && apt clean \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*

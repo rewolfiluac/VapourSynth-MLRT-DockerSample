@@ -165,3 +165,8 @@ cython_debug/
 .bash_history
 .bash_profile
 .gitconfig
+.python_history
+
+# in/out files
+input/*
+output/*
